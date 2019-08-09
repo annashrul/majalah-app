@@ -170,4 +170,68 @@ class Api extends CI_Controller{
 
 
 
+	public function get_nearby_kantor($lat=null,$long=null){
+		if(!isset($lat)||!isset($long)){
+			echo 'access denied.';
+			die();
+		}
+
+		//api key distancematrix
+		$API_KEY = "AIzaSyA1uxab8JTufkfuXgCX8ULSIhhSPJs-WC0";
+		$response = array();
+		// prgpg
+		// $lat=-6.8063322,107.5742086;
+		// btm
+		// -6.9115057,107.642177
+		$sql = $this->db->query("SELECT *, (6371 * 2 * ASIN(SQRT( POWER(SIN(( $lat - latitude) *  pi()/180 / 2), 2) +COS( $lat * pi()/180) * COS(latitude * pi()/180) * POWER(SIN(( $long - longitude) * pi()/180 / 2), 2) ))) as distance  from lokasi having  distance <= 10 order by distance;")->result_array();
+
+
+		if(count($sql)==0){
+			$response=array(
+				'result'=>array(),
+				'message'=>"Tidak ada lokasi terdekat.",
+				'status'=>false
+			);
+		}else{
+			$qs='';
+			foreach($sql as $k=>$i){
+				$qs.=$i['latitude']."%2C".$i['longitude']."%7C";
+			}
+			$res = file_get_contents("https://maps.googleapis.com/maps/api/distancematrix/json?origins=$lat,$long&destinations=$qs&key=$API_KEY");
+			$data = json_decode($res);
+			if($data->status!='OK'){
+				$el=null;
+			}else{
+				$el=$data->rows[0]->elements;
+			}
+			$hasil=array();
+			foreach($sql as $k=>$i){
+				array_push($hasil,array(
+					'id_lokasi'=> $i['id_lokasi'],
+					'nama'=> $i['nama'],
+					'longitude'=>$i['longitude'],
+					'latitude'=> $i['latitude'],
+					'alamat'=>$i['alamat'],
+					'provinsi'=>$i['provinsi'],
+					'kota'=>$i['kota'],
+					'kecamatan'=>$i['kecamatan'],
+					'tlp1'=>$i['tlp1'],
+					'tlp2'=>$i['tlp2'],
+					'gambar'=>$i['gambar'],
+					'jarak'=>isset($el[$k]->distance->text)?$el[$k]->distance->text:null,
+					'waktu'=>isset($el[$k]->duration->text)?$el[$k]->duration->text:null,
+				));
+			}
+
+			$response=array(
+				'result'=>$hasil,
+				'message'=>"success.",
+				'status'=>true
+			);
+
+		}
+		echo json_encode($response,JSON_PRETTY_PRINT);
+
+	}
+
 }

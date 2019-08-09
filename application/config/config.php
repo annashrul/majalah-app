@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $config['email'] = 'admin@polri.co.id';
 $config['url'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http").'://'.$_SERVER['HTTP_HOST'].'/';
-$config['site'] = 'netindo/majalah/';
+$config['site'] = 'majalah/';
 $config['base_url'] = $config['url'].$config['site'];
 //$config['base_url'] = 'http://localhost:8080/idk_store/';
 
