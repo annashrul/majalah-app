@@ -44,8 +44,8 @@ class Api extends CI_Controller{
         echo json_encode($response);
     }
 
-    public function get_edisi($page=1){
-        $start = ($page - 1) * 10;
+    public function get_edisi(){
+//        $start = ($page - 1) * 10;
         $response=array();
         $where=null;
         if($this->input->post('tahun')&&$this->input->post('tahun')!=null){
@@ -63,7 +63,7 @@ class Api extends CI_Controller{
             $where.="MONTH(tanggal)=MONTH(CURDATE())";
         }
 
-        $read_data = $this->m_crud->read_data("edisi","*",$where,null,null,10, $start);
+        $read_data = $this->m_crud->read_data("edisi","*",$where,null,null,$this->input->post('limit'),0);
         $read_search = $this->m_crud->read_data("edisi","YEAR(tanggal) tahun, MONTH(tanggal) bulan",null,null,"tahun,bulan");
         if($read_data != null){
             $response['status']     = true;
@@ -142,7 +142,7 @@ class Api extends CI_Controller{
 
 
     public function get_berita(){
-        
+
         $response=array();
 
         if($_POST['action'] == 'by_edisi') {
