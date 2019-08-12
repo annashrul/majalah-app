@@ -221,7 +221,7 @@ class Api extends CI_Controller{
 					'kecamatan'=>$i['kecamatan'],
 					'tlp1'=>$i['tlp1'],
 					'tlp2'=>$i['tlp2'],
-					'gambar'=>$i['gambar'],
+					'gambar'=>base_url().$i['gambar'],
 					'jarak'=>isset($el[$k]->distance->text)?$el[$k]->distance->text:null,
 					'waktu'=>isset($el[$k]->duration->text)?$el[$k]->duration->text:null,
 				));
