@@ -69,8 +69,9 @@ class Api extends CI_Controller{
             $response['status']     = true;
             $response['total_rows'] = count($read_data);
             $response['per_page']   = $page;
+
             foreach($read_data as $row){
-                $response['result']  = array(
+                $response['result'][]  = array(
                     'id_edisi'  => $row['id_edisi'],
                     'nama'      => $row['nama'],
                     'slug'      => $row['slug'],
@@ -78,6 +79,7 @@ class Api extends CI_Controller{
                     'tanggal'   => longdate_indo($row['tanggal'])
                 );
             }
+
             foreach($read_search as $val){
                 $response['search'] = array(
                     "tahun" => $val['tahun'],
@@ -136,6 +138,8 @@ class Api extends CI_Controller{
 
         echo json_encode($response,JSON_PRETTY_PRINT);
     }
+
+
 
 
     public function bulan($bulan){

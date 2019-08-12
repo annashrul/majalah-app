@@ -130,6 +130,7 @@
         var page = $(this).data("ci-pagination-page");
         load_data(page);
     });
+
     function cari(e=null, val=null) {
         if (e.keyCode == 13) {
             load_data(1, {search:true, any:val});

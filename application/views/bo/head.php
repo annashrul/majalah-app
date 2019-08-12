@@ -3,7 +3,7 @@
 	<meta name="description" content="" />
 	<meta name="author" content="" />
 	<link rel="shortcut icon" type="image/png" href="" />
-	<title>title</title>
+	<title><?=$this->site?></title>
 	<!-- Base Css Files -->
 	<link href="<?=base_url().'assets/'?>css/bootstrap.min.css" rel="stylesheet" />
 	<!-- Font Icons -->
