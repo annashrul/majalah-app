@@ -34,7 +34,7 @@ class Api extends CI_Controller{
             $response['result']  = $read_data;
             foreach($read_data as $row){
                 $response['result'][]=array(
-                    "id_kategori" => $row['id_kategori_berita'],
+                    "id_kategori_berita" => $row['id_kategori_berita'],
                     "nama"  => $row['nama'],
                     "gambar"=> base_url().$row['gambar'],
                     "slug"  => $row['slug']
@@ -121,9 +121,16 @@ class Api extends CI_Controller{
         echo json_encode($response,JSON_PRETTY_PRINT);
     }
 
+    public function get_edisi_baru(){
+        $response = array();
+        $read_data = $this->m_crud->read_data("edisi","*","MONTH(tanggal)=MONTH(CURRENT_DATE())");
+    }
+
     public function get_berita(){
 
         $response=array();
+
+
 
         if($_POST['action'] == 'by_edisi') {
             $read_data= $this->m_crud->join_data(
@@ -140,15 +147,31 @@ class Api extends CI_Controller{
                 array("kb.id_kategori_berita=b.id_kategori_berita"),
                 "kb.slug='" . $this->input->post('slug_kategori') . "'", "b.tgl_insert desc", null, $this->input->post('limit'),0
             );
+        }elseif($_POST['action']=='new_edisi'){
+            $read_data = $this->m_crud->join_data(
+                "berita b", "b.id_berita,b.user_id,b.judul,b.ringkasan,b.isi,b.gambar,b.tag,b.tanggal tgl_berita,e.slug slug_edisi, e.nama nama_edisi",
+                array(array("type" => "LEFT", "table" => "edisi e")),
+                array("e.id_edisi=b.id_edisi"),
+                "MONTH(e.tanggal)=MONTH(CURRENT_DATE())", "b.tgl_insert desc", null, $_POST['limit'],0
+            );
         }
-
-
 
         if($read_data!=null){
             if($this->input->post('limit') > count($read_data)) {
                 $response['status'] = false;
                 $response['total_rows'] = count($read_data);
                 foreach ($read_data as $row) {
+                    $slug = "";$nama = "";
+                    if($_POST['action']=='by_edisi'){
+                        $slug.=$row['slug_edisi'];
+                        $nama.=$row['nama_edisi'];
+                    }elseif($_POST['action']=='by_kategori'){
+                        $slug.=$row['slug_kategori'];
+                        $nama.=$row['nama_kategori'];
+                    }elseif($_POST['action']=='new_edisi'){
+                        $slug.=$row['slug_edisi'];
+                        $nama.=$row['nama_edisi'];
+                    }
                     $response['result'][] = array(
                         "id_berita" => $row['id_berita'],
                         "user_id" => $row['user_id'],
@@ -158,14 +181,25 @@ class Api extends CI_Controller{
                         "gambar" => base_url() . $row['gambar'],
                         "seo" => $row['tag'],
                         "tgl_berita" => longdate_indo($row['tgl_berita']),
-                        "slug" => $_POST['action'] == 'by_edisi' ? $row['slug_edisi'] : $row['slug_kategori'],
-                        "nama" => $_POST['action'] == 'by_edisi' ? $row['nama_edisi'] : $row['nama_kategori']
+                        "slug" => $slug,
+                        "nama" => $nama
                     );
                 }
             }else{
                 $response['status'] = true;
                 $response['total_rows'] = count($read_data);
                 foreach ($read_data as $row) {
+                    $slug = "";$nama = "";
+                    if($_POST['action']=='by_edisi'){
+                        $slug.=$row['slug_edisi'];
+                        $nama.=$row['nama_edisi'];
+                    }elseif($_POST['action']=='by_kategori'){
+                        $slug.=$row['slug_kategori'];
+                        $nama.=$row['nama_kategori'];
+                    }elseif($_POST['action']=='new_edisi'){
+                        $slug.=$row['slug_edisi'];
+                        $nama.=$row['nama_edisi'];
+                    }
                     $response['result'][] = array(
                         "id_berita" => $row['id_berita'],
                         "user_id" => $row['user_id'],
@@ -175,8 +209,8 @@ class Api extends CI_Controller{
                         "gambar" => base_url() . $row['gambar'],
                         "seo" => $row['tag'],
                         "tgl_berita" => longdate_indo($row['tgl_berita']),
-                        "slug" => $_POST['action'] == 'by_edisi' ? $row['slug_edisi'] : $row['slug_kategori'],
-                        "nama" => $_POST['action'] == 'by_edisi' ? $row['nama_edisi'] : $row['nama_kategori']
+                        "slug" => $slug,
+                        "nama" => $nama
                     );
                 }
             }
@@ -194,7 +228,15 @@ class Api extends CI_Controller{
 
     public function get_detail_berita(){
         $response = array();
-//        $read_data =
+        $read_data = $this->m_crud->read_data("berita","*");
+        foreach($read_data as $row){
+            $response['result'][]=array(
+                "id_berita"=>$row['id_berita'],
+                "judul" => $row['judul'],
+
+            );
+        }
+        echo json_encode($response);
     }
 
     public function bulan($bulan){
