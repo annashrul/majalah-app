@@ -28,10 +28,10 @@ class Api extends CI_Controller{
 
     public function get_kategori(){
         $response=array();
-        $read_data = $this->m_crud->read_data("kategori_berita","*");
+        $read_data = $this->m_crud->read_data("kategori_berita","id_kategori_berita,nama,gambar,slug");
         if($read_data != null){
             $response['status']  = true;
-            $response['result']  = $read_data;
+//            $response['result']  = $read_data;
             foreach($read_data as $row){
                 $response['result'][]=array(
                     "id_kategori_berita" => $row['id_kategori_berita'],
