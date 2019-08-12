@@ -139,6 +139,41 @@ class Api extends CI_Controller{
         echo json_encode($response,JSON_PRETTY_PRINT);
     }
 
+    public function get_berita_by_edisi($page=1){
+        $start = ($page - 1) * 10;
+        $response=array();
+        $read_data = $this->m_crud->join_data(
+            "berita b","b.id_berita,b.user_id,b.judul,b.ringkasan,b.isi,b.gambar,b.tag,b.tanggal tgl_berita,e.slug slug_edisi, e.nama nama_edisi",
+            array(array("type"=>"LEFT","table"=>"edisi e")),
+            array("e.id_edisi=b.id_edisi"),
+            "e.slug='".$this->input->post('slug_edisi')."'","b.tgl_insert desc",null, 10, $start
+        );
+        if($read_data!=null){
+            $response['status']     = true;
+            $response['total_rows'] = count($read_data);
+            $response['per_page']   = $page;
+            foreach($read_data as $row){
+                $response['result'][]=array(
+                    "id_berita"  => $row['id_berita'],
+                    "user_id"    => $row['user_id'],
+                    "judul"      => $row['judul'],
+                    "ringkasan"  => $row['ringkasan'],
+                    "slug_edisi"          => $row['slug_edisi'],
+                    "isi"           => $row['isi'],
+                    "gambar"        => base_url().$row['gambar'],
+                    "seo"           => $row['tag'],
+                    "tgl_berita"       => longdate_indo($row['tgl_berita']),
+                    "nama_edisi"    => $row['nama_edisi']
+                );
+            }
+        }else{
+            $response['result']  = $read_data;
+            $response['message'] = "Data Tidak Ada";
+            $response['status']  = false;
+        }
+
+        echo json_encode($response,JSON_PRETTY_PRINT);
+    }
 
 
 
