@@ -32,6 +32,14 @@ class Api extends CI_Controller{
         if($read_data != null){
             $response['status']  = true;
             $response['result']  = $read_data;
+            foreach($read_data as $row){
+                $response['result'][]=array(
+                    "id_kategori" => $row['id_kategori_berita'],
+                    "nama"  => $row['nama'],
+                    "gambar"=> base_url().$row['gambar'],
+                    "slug"  => $row['slug']
+                );
+            }
         }else{
             $response['status']  = false;
             $response['result']  = $read_data;
@@ -137,21 +145,40 @@ class Api extends CI_Controller{
 
 
         if($read_data!=null){
-            $response['status']     = true;
-            $response['total_rows'] = count($read_data);
-            foreach($read_data as $row){
-                $response['result'][]=array(
-                    "id_berita"  => $row['id_berita'],
-                    "user_id"    => $row['user_id'],
-                    "judul"      => $row['judul'],
-                    "ringkasan"  => $row['ringkasan'],
-                    "isi"        => $row['isi'],
-                    "gambar"     => base_url().$row['gambar'],
-                    "seo"        => $row['tag'],
-                    "tgl_berita"       => longdate_indo($row['tgl_berita']),
-                    "slug"          =>   $_POST['action']=='by_edisi'?$row['slug_edisi']:$row['slug_kategori'],
-                    "nama"          => $_POST['action']=='by_edisi'?$row['nama_edisi']:$row['nama_kategori']
-                );
+            if($this->input->post('limit') > count($read_data)) {
+                $response['status'] = false;
+                $response['total_rows'] = count($read_data);
+                foreach ($read_data as $row) {
+                    $response['result'][] = array(
+                        "id_berita" => $row['id_berita'],
+                        "user_id" => $row['user_id'],
+                        "judul" => $row['judul'],
+                        "ringkasan" => $row['ringkasan'],
+                        "isi" => $row['isi'],
+                        "gambar" => base_url() . $row['gambar'],
+                        "seo" => $row['tag'],
+                        "tgl_berita" => longdate_indo($row['tgl_berita']),
+                        "slug" => $_POST['action'] == 'by_edisi' ? $row['slug_edisi'] : $row['slug_kategori'],
+                        "nama" => $_POST['action'] == 'by_edisi' ? $row['nama_edisi'] : $row['nama_kategori']
+                    );
+                }
+            }else{
+                $response['status'] = true;
+                $response['total_rows'] = count($read_data);
+                foreach ($read_data as $row) {
+                    $response['result'][] = array(
+                        "id_berita" => $row['id_berita'],
+                        "user_id" => $row['user_id'],
+                        "judul" => $row['judul'],
+                        "ringkasan" => $row['ringkasan'],
+                        "isi" => $row['isi'],
+                        "gambar" => base_url() . $row['gambar'],
+                        "seo" => $row['tag'],
+                        "tgl_berita" => longdate_indo($row['tgl_berita']),
+                        "slug" => $_POST['action'] == 'by_edisi' ? $row['slug_edisi'] : $row['slug_kategori'],
+                        "nama" => $_POST['action'] == 'by_edisi' ? $row['nama_edisi'] : $row['nama_kategori']
+                    );
+                }
             }
         }else{
             $response['result']  = $read_data;
@@ -167,6 +194,7 @@ class Api extends CI_Controller{
 
     public function get_detail_berita(){
         $response = array();
+//        $read_data =
     }
 
     public function bulan($bulan){
