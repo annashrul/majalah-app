@@ -188,6 +188,7 @@ class Api extends CI_Controller{
             }else{
                 $response['status'] = true;
                 $response['total_rows'] = count($read_data);
+                $response['slug']=$read_data[0]['slug_edisi'];
                 foreach ($read_data as $row) {
                     $slug = "";$nama = "";
                     if($_POST['action']=='by_edisi'){
