@@ -188,7 +188,14 @@ class Api extends CI_Controller{
             }else{
                 $response['status'] = true;
                 $response['total_rows'] = count($read_data);
-                $response['slug']=$read_data[0]['slug_edisi'];
+//                $response['slug']=$_POST['action']=='by_edisi'||$_POST['action']=='new_edisi'$read_data[0]['slug_edisi'];
+                if($_POST['action']=='by_edisi'||$_POST['action']=='new_edisi'){
+                    $response['slug']=$read_data[0]['slug_edisi'];
+                    $response['nama']=$read_data[0]['nama_edisi'];
+                }elseif($_POST['action']=='by_kategori'){
+                    $response['slug']=$read_data[0]['slug_kategori'];
+                    $response['nama']=$read_data[0]['nama_kategori'];
+                }
                 foreach ($read_data as $row) {
                     $slug = "";$nama = "";
                     if($_POST['action']=='by_edisi'){
