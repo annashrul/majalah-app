@@ -68,7 +68,7 @@ class Api extends CI_Controller{
         if($read_data != null){
             $response['status']     = true;
             $response['total_rows'] = count($read_data);
-            $response['per_page']   = $page;
+//            $response['per_page']   = $page;
 
             foreach($read_data as $row){
                 $response['result'][]  = array(
