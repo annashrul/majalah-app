@@ -16,10 +16,6 @@ class Api extends CI_Controller{
     }
 
 
-    public function register(){
-        echo $this->generateRandomString();
-    }
-
     function generateRandomString($length = 10) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
@@ -45,7 +41,6 @@ class Api extends CI_Controller{
     }
 
     public function get_edisi(){
-//        $start = ($page - 1) * 10;
         $response=array();
         $where=null;
         if($this->input->post('tahun')&&$this->input->post('tahun')!=null){
@@ -66,27 +61,49 @@ class Api extends CI_Controller{
         $read_data = $this->m_crud->read_data("edisi","*",$where,null,null,$this->input->post('limit'),0);
         $read_search = $this->m_crud->read_data("edisi","YEAR(tanggal) tahun, MONTH(tanggal) bulan",null,null,"tahun,bulan");
         if($read_data != null){
-            $response['status']     = true;
-            $response['total_rows'] = count($read_data);
-//            $response['per_page']   = $page;
+            if($this->input->post('limit') > count($read_data)){
+                $response['status']     = false;
+                $response['total_rows'] = count($read_data);
+                foreach($read_data as $row){
+                    $response['result'][]  = array(
+                        'id_edisi'  => $row['id_edisi'],
+                        'nama'      => $row['nama'],
+                        'slug'      => $row['slug'],
+                        'gambar'    => base_url().$row['gambar'],
+                        'tanggal'   => longdate_indo($row['tanggal'])
+                    );
+                }
 
-            foreach($read_data as $row){
-                $response['result'][]  = array(
-                    'id_edisi'  => $row['id_edisi'],
-                    'nama'      => $row['nama'],
-                    'slug'      => $row['slug'],
-                    'gambar'    => base_url().$row['gambar'],
-                    'tanggal'   => longdate_indo($row['tanggal'])
-                );
+                foreach($read_search as $val){
+                    $response['search'] = array(
+                        "tahun" => $val['tahun'],
+                        "bulan" => $val['bulan'],
+                        "nama"  => $this->bulan($val['bulan'])
+                    );
+                }
+
+            }else{
+                $response['status']     = true;
+                $response['total_rows'] = count($read_data);
+                foreach($read_data as $row){
+                    $response['result'][]  = array(
+                        'id_edisi'  => $row['id_edisi'],
+                        'nama'      => $row['nama'],
+                        'slug'      => $row['slug'],
+                        'gambar'    => base_url().$row['gambar'],
+                        'tanggal'   => longdate_indo($row['tanggal'])
+                    );
+                }
+
+                foreach($read_search as $val){
+                    $response['search'] = array(
+                        "tahun" => $val['tahun'],
+                        "bulan" => $val['bulan'],
+                        "nama"  => $this->bulan($val['bulan'])
+                    );
+                }
             }
 
-            foreach($read_search as $val){
-                $response['search'] = array(
-                    "tahun" => $val['tahun'],
-                    "bulan" => $val['bulan'],
-                    "nama"  => $this->bulan($val['bulan'])
-                );
-            }
 
         }else{
             $response['result']  = $read_data;
@@ -95,51 +112,6 @@ class Api extends CI_Controller{
         }
         echo json_encode($response,JSON_PRETTY_PRINT);
     }
-
-//    public function get_berita($page=1){
-//        $start = ($page - 1) * 10;
-//        $where = null;
-//        if($this->input->post('judul')&&$this->input->post('judul')!=null){
-//            $where.="b.judul like '%".$this->input->post('judul')."%'";
-//        }
-//
-//        $response=array();
-//        $read_data = $this->m_crud->join_data(
-//            "berita b","b.*,e.nama nama_edisi,kb.nama nama_kategori",
-//            array(array("type"=>"LEFT","table"=>"edisi e"),array("type"=>"LEFT","table"=>"kategori_berita kb")),
-//            array("e.id_edisi=b.id_edisi","kb.id_kategori_berita=b.id_kategori_berita"),
-//            $where,"b.tgl_insert desc",null, 10, $start
-//        );
-//        if($read_data!=null){
-//            $response['status']     = true;
-//            $response['total_rows'] = count($read_data);
-//            $response['per_page']   = $page;
-//            foreach($read_data as $row){
-//                $response['result']=array(
-//                    "id_berita"     => $row['id_berita'],
-//                    "id_kategori"   => $row['id_kategori_berita'],
-//                    "id_edisi"      => $row['id_edisi'],
-//                    "user_id"       => $row['user_id'],
-//                    "judul"         => $row['judul'],
-//                    "slug"          => $row['slug'],
-//                    "ringkasan"     => $row['ringkasan'],
-//                    "isi"           => $row['isi'],
-//                    "gambar"        => base_url().$row['gambar'],
-//                    "seo"           => $row['tag'],
-//                    "tanggal"       => longdate_indo($row['tanggal']),
-//                    "url"           => base_url().$row['slug']
-//                );
-//            }
-//        }else{
-//            $response['result']  = $read_data;
-//            $response['message'] = "Berita Tidak Ada";
-//            $response['status']  = false;
-//        }
-//
-//        echo json_encode($response,JSON_PRETTY_PRINT);
-//    }
-
-
 
     public function get_berita(){
 
@@ -193,7 +165,9 @@ class Api extends CI_Controller{
         echo json_encode($response,JSON_PRETTY_PRINT);
     }
 
-
+    public function get_detail_berita(){
+        $response = array();
+    }
 
     public function bulan($bulan){
         $result = "";
@@ -224,8 +198,6 @@ class Api extends CI_Controller{
         }
         return $result;
     }
-
-
 
 	public function get_nearby_kantor($lat=null,$long=null){
 		if(!isset($lat)||!isset($long)){
