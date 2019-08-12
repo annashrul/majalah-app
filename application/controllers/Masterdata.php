@@ -105,6 +105,9 @@ class Masterdata extends CI_Controller
             $no = $start+1;
             if ($read_data != null) {
                 foreach ($read_data as $row) {
+                    $start = strpos($row["isi"], '<p>');
+                    $end = strpos($row["isi"], '</p>', $start);
+                    $paragraph = substr($row["isi"], $start, $end-$start+4);
                     $gambar = '<img style="max-height:50px;max-width:80px;" src="' . base_url().$row['gambar'] . '" />';
                     $output .= /** @lang text */'
                     <tr>
@@ -123,7 +126,7 @@ class Masterdata extends CI_Controller
                         <td>' . $row['tanggal'] . '</td>
                         <td>' . $gambar . '</td>
                         <td>' . substr(strip_tags($row['ringkasan']), 0, 100) . '</td>
-                        <td>' . substr(strip_tags($row['isi']), 0, 100) . '</td>
+                        <td>' . $paragraph . '</td>
                         <td>' . $row['nama_kategori'] . '</td>
                     </tr>
                 ';
