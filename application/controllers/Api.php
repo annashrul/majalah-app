@@ -67,7 +67,7 @@ class Api extends CI_Controller{
         }
 
         $read_data = $this->m_crud->read_data("edisi","*",$where,null,null,$this->input->post('limit'),0);
-        $read_search = $this->m_crud->read_data("edisi","YEAR(tanggal) tahun, MONTH(tanggal) bulan",null,null,"tahun,bulan");
+        $read_search = $this->m_crud->read_data("edisi","YEAR(tanggal) tahun, MONTH(tanggal) bulan","id_edisi desc",null,"tahun,bulan");
         if($read_data != null){
             if($this->input->post('limit') > count($read_data)){
                 $response['status']     = false;

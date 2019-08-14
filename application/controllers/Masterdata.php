@@ -148,7 +148,7 @@ class Masterdata extends CI_Controller
             $config['upload_path']          = './'.$path;
             $config['allowed_types']        = 'bmp|gif|jpg|jpeg|png';
             $config['max_size']             = 5120;
-            $config['encrypt_name'] 	= TRUE;
+//            $config['encrypt_name'] 	= TRUE;
             $this->load->library('upload', $config);
             $input_file = array('1'=>'file_upload');
             $valid = true;
