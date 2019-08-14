@@ -21,6 +21,7 @@
 		<div id="sidebar-menu">
 			<ul>
 				<li><a href="<?=base_url().'site/dashboard'?>" class="waves-effect <?=($page=='dashboard')?'active':null?>"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
+				<li><a href="<?=base_url().'masterdata/user_list'?>" class="waves-effect <?=($page=='dashboard')?'active':null?>"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
                 <li><a href="<?=base_url().'masterdata/berita'?>" class="waves-effect <?=($page=='berita')?'active':null?>"><i class="fa fa-list"></i><span>Berita</span></a></li>
                 <li><a href="<?=base_url().'masterdata/kategori_berita'?>" class="waves-effect <?=($page=='kategori_berita')?'active':null?>"><i class="fa fa-list"></i><span>Kategori</span></a></li>
                 <li><a href="<?=base_url().'masterdata/edisi'?>" class="waves-effect <?=($page=='edisi')?'active':null?>"><i class="fa fa-list"></i><span>Edisi</span></a></li>

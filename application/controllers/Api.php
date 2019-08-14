@@ -31,7 +31,6 @@ class Api extends CI_Controller{
         $read_data = $this->m_crud->read_data("kategori_berita","id_kategori_berita,nama,gambar,slug");
         if($read_data != null){
             $response['status']  = true;
-//            $response['result']  = $read_data;
             foreach($read_data as $row){
                 $response['result'][]=array(
                     "id_kategori_berita" => $row['id_kategori_berita'],
@@ -144,7 +143,7 @@ class Api extends CI_Controller{
             );
         }elseif($_POST['action']=='new_edisi'){
             $read_data = $this->m_crud->join_data(
-                "berita b", "b.id_berita,b.user_id,b.judul,b.ringkasan,b.isi,b.gambar,b.tag,b.tanggal tgl_berita,e.slug slug_edisi, e.nama nama_edisi",
+                "berita b", "b.slug slug_berita, b.id_berita,b.user_id,b.judul,b.ringkasan,b.isi,b.gambar,b.tag,b.tanggal tgl_berita,e.slug slug_edisi, e.nama nama_edisi",
                 array(array("type" => "LEFT", "table" => "edisi e")),
                 array("e.id_edisi=b.id_edisi"),
                 "MONTH(e.tanggal)=MONTH(CURRENT_DATE())", "b.tgl_insert desc", null, $_POST['limit'],0
@@ -177,6 +176,7 @@ class Api extends CI_Controller{
                     $response['result'][] = array(
                         "id_berita" => $row['id_berita'],
                         "user_id" => $row['user_id'],
+                        "slug_berita" => $row['slug_berita'],
                         "judul" => $row['judul'],
                         "ringkasan" => $row['ringkasan'],
                         "isi" => $row['isi'],
@@ -213,6 +213,7 @@ class Api extends CI_Controller{
                     $response['result'][] = array(
                         "id_berita" => $row['id_berita'],
                         "user_id" => $row['user_id'],
+                        "slug_berita" => $row['slug_berita'],
                         "judul" => $row['judul'],
                         "ringkasan" => $row['ringkasan'],
                         "isi" => $row['isi'],

@@ -770,7 +770,8 @@ class Masterdata extends CI_Controller
                 'result_table' => $output
             );
             echo json_encode($result);
-        }else if ($action == 'cek_nama') {
+        }
+        else if ($action == 'cek_nama') {
             $where = "nama='".$_POST['nama']."'";
 
             $_POST['param']=='edit'?$where.=" AND nama<>'".$_POST['nama']."'":null;
@@ -887,5 +888,23 @@ class Masterdata extends CI_Controller
 
     }
 
+    public function user_list($action=null, $page=1){
+        $data = $this->data;
+        $function = 'user_list';
+        $view = $this->control.'/';
+        if($this->session->userdata($this->site . 'admin_menu')!=$function){
+            $this->session->unset_userdata('search');
+            $this->session->set_userdata($this->site . 'admin_menu', $function);
+        }
+        $data['title'] = 'Data User';
+        $data['page'] = $function;
+        $data['content'] = $view.$function;
+        $table = $function;
+        if($action == 'get_data'){
 
+        }
+        else{
+            $this->load->view('bo/index', $data);
+        }
+    }
 }
