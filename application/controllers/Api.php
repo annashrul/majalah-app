@@ -128,7 +128,7 @@ class Api extends CI_Controller{
         $response=array();
         if($_POST['action'] == 'by_edisi') {
             $read_data= $this->m_crud->join_data(
-                "berita b", "b.id_berita,b.user_id,b.judul,b.ringkasan,b.isi,b.gambar,b.tag,b.tanggal tgl_berita,e.slug slug_edisi, e.nama nama_edisi",
+                "berita b", "b.slug slug_berita,b.id_berita,b.user_id,b.judul,b.ringkasan,b.isi,b.gambar,b.tag,b.tanggal tgl_berita,e.slug slug_edisi, e.nama nama_edisi",
                 array(array("type" => "LEFT", "table" => "edisi e")),
                 array("e.id_edisi=b.id_edisi"),
                 "e.slug='" . $this->input->post('slug_edisi') . "'", "b.tgl_insert desc", null, $this->input->post('limit'),0
@@ -136,7 +136,7 @@ class Api extends CI_Controller{
         }
         elseif($_POST['action'] == 'by_kategori') {
             $read_data = $this->m_crud->join_data(
-                "berita b", "b.id_berita,b.user_id,b.judul,b.ringkasan,b.isi,b.gambar,b.tag,b.tanggal tgl_berita,kb.slug slug_kategori, kb.nama nama_kategori",
+                "berita b", "b.slug slug_berita,b.id_berita,b.user_id,b.judul,b.ringkasan,b.isi,b.gambar,b.tag,b.tanggal tgl_berita,kb.slug slug_kategori, kb.nama nama_kategori",
                 array(array("type" => "LEFT", "table" => "kategori_berita kb")),
                 array("kb.id_kategori_berita=b.id_kategori_berita"),
                 "kb.slug='" . $this->input->post('slug_kategori') . "'", "b.tgl_insert desc", null, $this->input->post('limit'),0
