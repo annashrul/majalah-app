@@ -66,8 +66,8 @@ class Api extends CI_Controller{
             $where.="MONTH(tanggal)=MONTH(CURDATE())";
         }
 
-        $read_data = $this->m_crud->read_data("edisi","*",$where,null,null,$this->input->post('limit'),0);
-        $read_search = $this->m_crud->read_data("edisi","YEAR(tanggal) tahun, MONTH(tanggal) bulan","id_edisi desc",null,"tahun,bulan");
+        $read_data = $this->m_crud->read_data("edisi","*",$where,"id_edisi desc",null,$this->input->post('limit'),0);
+        $read_search = $this->m_crud->read_data("edisi","YEAR(tanggal) tahun, MONTH(tanggal) bulan",null,null,"tahun,bulan");
         if($read_data != null){
             if($this->input->post('limit') > count($read_data)){
                 $response['status']     = false;
@@ -111,7 +111,6 @@ class Api extends CI_Controller{
                     );
                 }
             }
-
 
         }else{
             $response['result']  = $read_data;
