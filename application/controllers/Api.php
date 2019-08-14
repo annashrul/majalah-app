@@ -251,7 +251,7 @@ class Api extends CI_Controller{
                 "id_berita" => $row['id_berita'],
                 "judul"     => $row['judul'],
                 "ringkasan"=> $row['ringkasan'],
-                "isi"=>$row['isi'],
+                "isi"=>strip_tags($row['isi']),
                 "gambar"=>base_url().$row['gambar'],
                 "tanggal"=>longdate_indo($row['tanggal']),
                 "nama_kategori"=>$row['nama_kategori'],
