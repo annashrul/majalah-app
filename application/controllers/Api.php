@@ -127,11 +127,7 @@ class Api extends CI_Controller{
     }
 
     public function get_berita(){
-
         $response=array();
-
-
-
         if($_POST['action'] == 'by_edisi') {
             $read_data= $this->m_crud->join_data(
                 "berita b", "b.id_berita,b.user_id,b.judul,b.ringkasan,b.isi,b.gambar,b.tag,b.tanggal tgl_berita,e.slug slug_edisi, e.nama nama_edisi",
@@ -243,12 +239,23 @@ class Api extends CI_Controller{
 
     public function get_detail_berita(){
         $response = array();
-        $read_data = $this->m_crud->read_data("berita","*");
+        $read_data = $this->m_crud->join_data(
+            "berita b","b.*,kb.nama nama_kategori, e.nama nama_edisi",
+            array(array("type"=>"LEFT","table"=>"kategori_berita kb"),array("type"=>"LEFT","table"=>"edisi e")),
+            array("kb.id_kategori_berita=b.id_kategori_berita","e.id_edisi=b.id_edisi"),
+            "b.slug='".$this->input->post('slug_berita')."'"
+        );
         foreach($read_data as $row){
             $response['result'][]=array(
-                "id_berita"=>$row['id_berita'],
-                "judul" => $row['judul'],
-
+                "user_id"   => $row['user_id'],
+                "id_berita" => $row['id_berita'],
+                "judul"     => $row['judul'],
+                "ringkasan"=> $row['ringkasan'],
+                "isi"=>$row['isi'],
+                "gambar"=>base_url().$row['gambar'],
+                "tanggal"=>longdate_indo($row['tanggal']),
+                "nama_kategori"=>$row['nama_kategori'],
+                "nama_edisi"=>$row['nama_edisi'],
             );
         }
         echo json_encode($response);
